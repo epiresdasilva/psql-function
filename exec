@@ -1,0 +1,9 @@
+#!/bin/bash
+PAYLOAD="${1:-/dev/stdin}"
+QUERY=$(cat query.sql  | tr '\n' ' ' | sed 's/{}/'"$PAYLOAD"'/g')
+GROUP_NAME="accounts"
+HOSTNAME=""
+PORT=""
+USERNAME=""
+PASSWORD=""
+PGPASSWORD="" PGSSLROOTCERT="" psql "host=$HOSTNAME port=$PORT dbname=ibmclouddb user=$USERNAME sslmode=verify-full" -A -t -c "$QUERY" | sed 's/\(.*\)/{"'"$GROUP_NAME"'":\1}/g'
